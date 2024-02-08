@@ -658,6 +658,10 @@ return view.extend({
 		o = s.taboption('feeds', form.Flag, 'ban_allowlistonly', _('Allowlist Only'), _('Restrict the internet access from/to a small number of secure IPs.'));
 		o.rmempty = false;
 
+		o = s.taboption('feeds', form.Value, 'ban_abuseipdb_token', _('AbuseIPDB token'), _('Token to fetch the abuseipdb blacklist for the abuseipdb feed. (Curl is required.)'));
+		o.placeholder = 'the token of abuseipdb, please visit abuseipdb.com and check this information.';
+		o.rmempty = true;
+
 		return m.render();
 	},
 	handleReset: null
