@@ -7,3 +7,6 @@
 [submodule "applications/luci-app-l2-isolation"]
 	path = applications/luci-app-l2-isolation
 	url = https://github.com/xize/luci-app-l2-isolation
+[submodule "applications/luci-app-openclash"]
+	path = applications/luci-app-openclash
+	url = https://github.com/vernesong/OpenClash
