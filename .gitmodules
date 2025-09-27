@@ -7,3 +7,6 @@
 [submodule "applications/luci-app-l2-isolation"]
 	path = applications/luci-app-l2-isolation
 	url = https://github.com/xize/luci-app-l2-isolation
+[submodule "themes/luci-theme-aurora"]
+	path = themes/luci-theme-aurora
+	url = https://github.com/eamonxg/luci-theme-aurora
