@@ -845,7 +845,8 @@ return view.extend({
 						}
 					};
 
-					so = ss.taboption('ipv6-ra', form.Value, 'ra_pref64', _('NAT64 prefix'), _('Announce NAT64 prefix in <abbr title="Router Advertisement">RA</abbr> messages.'));
+					so = ss.taboption('ipv6-ra', form.Value, 'ra_pref64', _('NAT64 prefix'), _('Announce NAT64 prefix in <abbr title="Router Advertisement">RA</abbr> messages.') +  ' ' + 
+						_('See %s and %s.'.format('<a href="%s" target="_blank">RFC6146</a>', '<a href="%s" target="_blank">RFC8781</a>').format('https://www.rfc-editor.org/rfc/rfc6146', 'https://www.rfc-editor.org/rfc/rfc8781')));
 					so.optional = true;
 					so.datatype = 'cidr6';
 					so.placeholder = '64:ff9b::/96';
@@ -863,6 +864,24 @@ return view.extend({
 					so.optional = true;
 					so.datatype = 'uinteger';
 					so.placeholder = '200';
+					so.depends('ra', 'server');
+					so.depends({ ra: 'hybrid', master: '0' });
+
+					so = ss.taboption('ipv6-ra', form.Value, 'ra_reachabletime', _('<abbr title="Router Advertisement">RA</abbr> Reachability Timer'), 
+						_('Units: milliseconds. 0 means unspecified.') + ' ' +
+						_('Dictates how long a node assumes a neighbor is reachable after a reachability confirmation; published in <abbr title="Router Advertisement">RA</abbr> messages.'));
+					so.optional = true;
+					so.datatype = 'range(0, 3600000)'; // RFC4861 and odhcpd caps to 3,600,000 msec
+					so.placeholder = '0';
+					so.depends('ra', 'server');
+					so.depends({ ra: 'hybrid', master: '0' });
+
+					so = ss.taboption('ipv6-ra', form.Value, 'ra_retranstime', _('<abbr title="Router Advertisement">RA</abbr> Retransmission Timer'), 
+						_('Units: milliseconds. 0 means unspecified.') + ' ' +
+						_('Controls retransmitted Neighbor Solicitation messages; published in <abbr title="Router Advertisement">RA</abbr> messages.'));
+					so.optional = true;
+					so.placeholder = '0';
+					so.datatype = 'range(0, 60000)'; // odhcpd caps to 60,000 msec
 					so.depends('ra', 'server');
 					so.depends({ ra: 'hybrid', master: '0' });
 
@@ -936,6 +955,14 @@ return view.extend({
 					so.depends('dhcpv6', 'server');
 					so.depends({ dhcpv6: 'hybrid', master: '0' });
 
+					so = ss.taboption('ipv6', form.Flag, 'dns_service', _('Local IPv6 DNS server'),
+						_('Announce this device as IPv6 DNS server.'));
+					so.default = so.enabled;
+					so.depends({ ra: 'server', dns: /^$/ });
+					so.depends({ ra: 'hybrid', dns: /^$/, master: '0' });
+					so.depends({ dhcpv6: 'server', dns: /^$/ });
+					so.depends({ dhcpv6: 'hybrid', dns: /^$/, master: '0' });
+
 					so = ss.taboption('ipv6', form.DynamicList, 'dnr', _('Announce encrypted DNS servers'),
 						_('Specifies a fixed list of encrypted DNS server addresses to announce via DHCPv6/<abbr title="Router Advertisement">RA</abbr> (see %s).')
 						 .format('<a href="%s" target="_blank">RFC9463</a>').format('https://www.rfc-editor.org/rfc/rfc9463') + '<br/>' +
@@ -949,14 +976,6 @@ return view.extend({
 					so.depends({ ra: 'hybrid', master: '0' });
 					so.depends('dhcpv6', 'server');
 					so.depends({ dhcpv6: 'hybrid', master: '0' });
-
-					so = ss.taboption('ipv6', form.Flag, 'dns_service', _('Local IPv6 DNS server'),
-						_('Announce this device as IPv6 DNS server.'));
-					so.default = so.enabled;
-					so.depends({ ra: 'server', dns: /^$/ });
-					so.depends({ ra: 'hybrid', dns: /^$/, master: '0' });
-					so.depends({ dhcpv6: 'server', dns: /^$/ });
-					so.depends({ dhcpv6: 'hybrid', dns: /^$/, master: '0' });
 
 					so = ss.taboption('ipv6', form.DynamicList, 'domain', _('Announce DNS domains'),
 						_('Specifies a fixed list of DNS search domains to announce via DHCPv6. If left unspecified, the local device DNS search domain will be announced.'));
