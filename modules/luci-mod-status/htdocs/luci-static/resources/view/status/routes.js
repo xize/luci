@@ -163,7 +163,8 @@ return view.extend({
 			res.push([
 				E('span', { 'class': 'ifacebadge' }, [ net ? net : '(%s)'.format(flags.dev) ]),
 				dest,
-				(v6 ? flags.from : flags.via) || '-',
+				flags.via || '-',
+				flags.src || flags.from || '-',
 				String(flags.metric || 0),
 				flags.table || 'main',
 				flags.proto,
@@ -222,6 +223,7 @@ return view.extend({
 				E('th', { 'class': 'th', 'title': device_title }, [ _('Device') ]),
 				E('th', { 'class': 'th', 'title': target_title }, [ _('Target') ]),
 				E('th', { 'class': 'th', 'title': gateway_title }, [ _('Gateway') ]),
+				E('th', { 'class': 'th', 'title': source_title }, [ _('Source') ]),
 				E('th', { 'class': 'th', 'title': metric_title }, [ _('Metric') ]),
 				E('th', { 'class': 'th', 'title': table_title }, [ _('Table') ]),
 				E('th', { 'class': 'th', 'title': proto_title }, [ _('Protocol') ])
@@ -247,6 +249,7 @@ return view.extend({
 			E('tr', { 'class': 'tr table-titles' }, [
 				E('th', { 'class': 'th', 'title': device_title }, [ _('Device') ]),
 				E('th', { 'class': 'th', 'title': target_title }, [ _('Target') ]),
+				E('th', { 'class': 'th', 'title': gateway_title }, [ _('Gateway') ]),
 				E('th', { 'class': 'th', 'title': source_title }, [ _('Source') ]),
 				E('th', { 'class': 'th', 'title': metric_title }, [ _('Metric') ]),
 				E('th', { 'class': 'th', 'title': table_title }, [ _('Table') ]),
@@ -264,7 +267,7 @@ return view.extend({
 		cbi_update_table(neigh4tbl, this.parseNeigh(ip4neigh, macdata, networks, false),
 			E('em', _('No entries available'))
 		);
-		cbi_update_table(route4tbl, this.parseRoute(ip4route, networks, false),
+		cbi_update_table(route4tbl, this.parseRoute(ip4route, macdata, networks, false),
 			E('em', _('No entries available'))
 		);
 		cbi_update_table(rule4tbl, this.parseRule(ip4rule, networks, false),
@@ -273,7 +276,7 @@ return view.extend({
 		cbi_update_table(neigh6tbl, this.parseNeigh(ip6neigh, macdata, networks, true),
 			E('em', _('No entries available'))
 		);
-		cbi_update_table(route6tbl, this.parseRoute(ip6route, networks, true),
+		cbi_update_table(route6tbl, this.parseRoute(ip6route, macdata, networks, true),
 			E('em', _('No entries available'))
 		);
 		cbi_update_table(rule6tbl, this.parseRule(ip6rule, networks, false),
