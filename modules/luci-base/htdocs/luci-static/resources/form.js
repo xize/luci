@@ -2601,6 +2601,9 @@ const CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection
 			if (this.extedit || this.rowcolors)
 				trEl.classList.add(!(tableEl.childNodes.length % 2)
 					? 'cbi-rowstyle-1' : 'cbi-rowstyle-2');
+			if  (sectionname && (!this.anonymous || this.sectiontitle)) {
+				trEl.appendChild(E('td', {'class': 'td cbi-value-field cbi-value-first-field'}, [ (sectionname && (!this.anonymous || this.sectiontitle)) ? sectionname : null ]));
+			}
 
 			for (let j = 0; j < max_cols && nodes[i].firstChild; j++)
 				trEl.appendChild(nodes[i].firstChild);
@@ -2641,10 +2644,17 @@ const CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection
 
 		if (has_titles) {
 			const trEl = E('tr', {
-				'class': `tr cbi-section-table-titles ${anon_class}`,
+				'class': `tr cbi-value-first-field cbi-section-table-titles ${anon_class}`,
 				'data-title': (!this.anonymous || this.sectiontitle) ? _('Name') : null,
 				'click': this.sortable ? ui.createHandlerFn(this, 'handleSort') : null
 			});
+			if (!this.anonymous || this.sectiontitle) {
+				trEl.appendChild(E('th', {
+						'class': 'th cbi-section-table-cell',
+						'data-sortable-row': this.sortable ? '' : null
+						},	(!this.anonymous || this.sectiontitle) ? _('Name') : null
+					));
+			}
 
 			for (let i = 0, opt; i < max_cols && (opt = this.children[i]) != null; i++) {
 				if (opt.modalonly)
@@ -4298,13 +4308,13 @@ const CBIRangeSliderValue = CBIValue.extend(/** @lends LuCI.form.RangeSliderValu
 });
 
 /**
- * @class FlagValue
+ * @class Flag
  * @memberof LuCI.form
  * @augments LuCI.form.Value
  * @hideconstructor
  * @classdesc
  *
- * The `FlagValue` element builds upon the {@link LuCI.ui.Checkbox} widget to
+ * The `Flag` element builds upon the {@link LuCI.ui.Checkbox} widget to
  * implement a simple checkbox element.
  *
  * @param {LuCI.form.Map|LuCI.form.JSONMap} form
@@ -4328,7 +4338,7 @@ const CBIRangeSliderValue = CBIValue.extend(/** @lends LuCI.form.RangeSliderValu
  * @param {string} [description]
  * The description text of the option element.
  */
-const CBIFlagValue = CBIValue.extend(/** @lends LuCI.form.FlagValue.prototype */ {
+const CBIFlagValue = CBIValue.extend(/** @lends LuCI.form.Flag.prototype */ {
 	__name__: 'CBI.FlagValue',
 
 	__init__(...args) {
@@ -4342,7 +4352,7 @@ const CBIFlagValue = CBIValue.extend(/** @lends LuCI.form.FlagValue.prototype */
 	/**
 	 * Sets the input value to use for the checkbox checked state.
 	 *
-	 * @name LuCI.form.FlagValue.prototype#enabled
+	 * @name LuCI.form.Flag.prototype#enabled
 	 * @type string
 	 * @default 1
 	 */
@@ -4350,7 +4360,7 @@ const CBIFlagValue = CBIValue.extend(/** @lends LuCI.form.FlagValue.prototype */
 	/**
 	 * Sets the input value to use for the checkbox unchecked state.
 	 *
-	 * @name LuCI.form.FlagValue.prototype#disabled
+	 * @name LuCI.form.Flag.prototype#disabled
 	 * @type string
 	 * @default 0
 	 */
@@ -4364,7 +4374,7 @@ const CBIFlagValue = CBIValue.extend(/** @lends LuCI.form.FlagValue.prototype */
 	 * value will be shown as a tooltip. If the return value of the function
 	 * is `null` no tooltip will be set.
 	 *
-	 * @name LuCI.form.FlagValue.prototype#tooltip
+	 * @name LuCI.form.Flag.prototype#tooltip
 	 * @type string|function
 	 * @default null
 	 */
@@ -4375,7 +4385,7 @@ const CBIFlagValue = CBIValue.extend(/** @lends LuCI.form.FlagValue.prototype */
 	 * If set, this icon will be shown for the default one.
 	 * This could also be a png icon from the resources directory.
 	 *
-	 * @name LuCI.form.FlagValue.prototype#tooltipicon
+	 * @name LuCI.form.Flag.prototype#tooltipicon
 	 * @type string
 	 * @default 'ℹ️';
 	 */
@@ -4733,13 +4743,13 @@ const CBIDummyValue = CBIValue.extend(/** @lends LuCI.form.DummyValue.prototype 
 });
 
 /**
- * @class ButtonValue
+ * @class Button
  * @memberof LuCI.form
  * @augments LuCI.form.Value
  * @hideconstructor
  * @classdesc
  *
- * The `ButtonValue` element wraps a {@link LuCI.ui.Hiddenfield} widget and
+ * The `Button` element wraps a {@link LuCI.ui.Hiddenfield} widget and
  * renders the underlying UCI option or default value as readonly text.
  *
  * @param {LuCI.form.Map|LuCI.form.JSONMap} form
@@ -4763,7 +4773,7 @@ const CBIDummyValue = CBIValue.extend(/** @lends LuCI.form.DummyValue.prototype 
  * @param {string} [description]
  * The description text of the option element.
  */
-const CBIButtonValue = CBIValue.extend(/** @lends LuCI.form.ButtonValue.prototype */ {
+const CBIButtonValue = CBIValue.extend(/** @lends LuCI.form.Button.prototype */ {
 	__name__: 'CBI.ButtonValue',
 
 	/**
@@ -4779,7 +4789,7 @@ const CBIButtonValue = CBIValue.extend(/** @lends LuCI.form.ButtonValue.prototyp
 	 *
 	 * The default of `null` means the option title is used as caption.
 	 *
-	 * @name LuCI.form.ButtonValue.prototype#inputtitle
+	 * @name LuCI.form.Button.prototype#inputtitle
 	 * @type string|function
 	 * @default null
 	 */
@@ -4795,7 +4805,7 @@ const CBIButtonValue = CBIValue.extend(/** @lends LuCI.form.ButtonValue.prototyp
 	 *
 	 * The default of `null` means a neutral button styling is used.
 	 *
-	 * @name LuCI.form.ButtonValue.prototype#inputstyle
+	 * @name LuCI.form.Button.prototype#inputstyle
 	 * @type string
 	 * @default null
 	 */
@@ -4812,7 +4822,7 @@ const CBIButtonValue = CBIValue.extend(/** @lends LuCI.form.ButtonValue.prototyp
 	 * DOM click element as the first and the underlying configuration section ID
 	 * as the second argument.
 	 *
-	 * @name LuCI.form.ButtonValue.prototype#onclick
+	 * @name LuCI.form.Button.prototype#onclick
 	 * @type function
 	 * @default null
 	 */
