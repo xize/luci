@@ -51,6 +51,11 @@ const css = '								\
 		white-space: nowrap;			\
 	}									\
 										\
+	/* bootstrap sets 15%; shrink */	\
+	#packages .td.cbi-section-actions {	\
+		width: auto;					\
+	}									\
+										\
 	ul.deps, ul.deps ul, ul.errors {	\
 		margin-left: 1em;				\
 	}									\
@@ -981,7 +986,7 @@ function handleConfig(ev)
 			body.push(E('h5', {}, '%h'.format(file)));
 			body.push(E('textarea', {
 				'name': file,
-				'rows': Math.max(Math.min(L.toArray(conf[file].match(/\n/g)).length, 10), 3)
+				'rows': Math.max(Math.min(L.toArray(conf[file].match(/\n/g)).length, 10), 3) + 1
 			}, '%h'.format(conf[file])));
 		});
 
